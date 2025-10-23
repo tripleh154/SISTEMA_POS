@@ -15,6 +15,7 @@ namespace PantallaDeLogin
     public partial class Productos : Form
     {
         private string cadenaConexion = ConfigurationManager.ConnectionStrings["MiconexionBD"].ConnectionString;
+        string IdProducto;
         public Productos()
         {
             InitializeComponent();
@@ -35,7 +36,33 @@ namespace PantallaDeLogin
 
         public void ModificarProductos()
         {
-
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+                {
+                    conexion.Open();
+                    string query = "UPDATE catProductos " +
+                        "SET Nombre = @nombre," +
+                        "Descripcion = @descripcion," +
+                        "Precio = @precio," +
+                        "Stock = @stock " +
+                        "WHERE ProductoID = @idProducto";
+                    using (SqlCommand comando = new SqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@nombre", tbNombre.Text);
+                        comando.Parameters.AddWithValue("@descripcion", tbDescripcion.Text);
+                        comando.Parameters.AddWithValue("@precio", tbPrecio.Text);
+                        comando.Parameters.AddWithValue("@stock", tbStock.Text);
+                        comando.Parameters.AddWithValue("@idProducto", IdProducto);
+                        comando.ExecuteNonQuery();
+                        MessageBox.Show("Modificado correctamente ");
+                        limpiarPantalla();
+                    }
+                }
+            }catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: "+ex.Message);
+            }
         }
         private void GuardarProductos()
         {
@@ -63,7 +90,9 @@ namespace PantallaDeLogin
             tbDescripcion.Text = "";
             tbPrecio.Text = "";
             tbStock.Text = "";
+            btnGuardar.Text = "GUARDAR";
             tbNombre.Focus();
+            CargarProductos(dgvProductos);
         }
 
         public void CargarProductos(DataGridView dgvProductos)
@@ -92,7 +121,7 @@ namespace PantallaDeLogin
             if (e.RowIndex >= 0)
             {
                 int rowIndex = e.RowIndex;
-                string IdProducto = dgvProductos.Rows[rowIndex].Cells["ID"].Value.ToString();
+                IdProducto = dgvProductos.Rows[rowIndex].Cells["ID"].Value.ToString();
                 tbNombre.Text = dgvProductos.Rows[rowIndex].Cells["Nombre"].Value.ToString();
                 tbDescripcion.Text = dgvProductos.Rows[rowIndex].Cells["Descripcion"].Value.ToString();
                 tbPrecio.Text = dgvProductos.Rows[rowIndex].Cells["Precio"].Value.ToString();
