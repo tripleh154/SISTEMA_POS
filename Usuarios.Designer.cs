@@ -205,6 +205,7 @@
             this.dgvUsuarios.Name = "dgvUsuarios";
             this.dgvUsuarios.Size = new System.Drawing.Size(538, 263);
             this.dgvUsuarios.TabIndex = 92;
+            this.dgvUsuarios.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUsuarios_CellDoubleClick);
             // 
             // btnRecargar
             // 

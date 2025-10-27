@@ -10,18 +10,65 @@ namespace PantallaDeLogin
     public partial class Usuarios: Form
     {
         private string cadenaConexion = ConfigurationManager.ConnectionStrings["MiconexionBD"].ConnectionString;
+        string IDUsuario;
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            if (ValidarPass(tbPass.Text))
+            if (btnGuardar.Text == "GUARDAR")
             {
-                GuardarUsuario();
-                CargarUsuarios(dgvUsuarios);
+                if (ValidarPass(tbPass.Text))
+                {
+                    GuardarUsuario();
+                    CargarUsuarios(dgvUsuarios);
+                }
+                else
+                {
+                    errorProvider1.SetError(tbPass, "La cotraseña debe tener una longitud de 8 a 20 caracteres\nDebe contener Mayusculas y Minusculas\nDebe contener un simbolo");
+                }
             }
             else
             {
-                errorProvider1.SetError(tbPass, "La cotraseña debe tener una longitud de 8 a 20 caracteres\nDebe contener Mayusculas y Minusculas\nDebe contener un simbolo");
+                ModificarUsuarios();
             }
         }
+
+        public void ModificarUsuarios()
+        {
+            try
+            {
+                using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+                {
+                    conexion.Open();
+                    string query = "UPDATE catUsuario " +
+                        "SET Nombre = @nombre," +
+                        "Telefono = @Telefono," +
+                        "Sexo = @Sexo," +
+                        "FechaNacimiento = @FechaNacimiento," +
+                        "Domicilio = @Domicilio " +
+                        "WHERE idUsuario = @idUsuario";
+                    using (SqlCommand comando = new SqlCommand(query, conexion))
+                    {
+                        comando.Parameters.AddWithValue("@nombre", TbNombre.Text);
+                        comando.Parameters.AddWithValue("@Telefono", mtbTelefono.Text);
+                        string seleccion = cbSexo.Text;
+                        string sexo = (seleccion == "MASCULINO") ? "M" : "F";
+                        comando.Parameters.AddWithValue("@Sexo", sexo);
+                        DateTime fechaSeleccionada = dtpFechaNacimiento.Value;
+                        string fechaNac = fechaSeleccionada.ToString("yyyy/MM/dd");
+                        comando.Parameters.AddWithValue("@FechaNacimiento", fechaNac);
+                        comando.Parameters.AddWithValue("@Domicilio", TbDomicilio.Text);
+                        comando.Parameters.AddWithValue("@idUsuario", IDUsuario);
+                        comando.ExecuteNonQuery();
+                        MessageBox.Show("Modificado correctamente ");
+                        limpiarPantalla();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("ERROR: " + ex.Message);
+            }
+        }
+
         private void GuardarUsuario()
         {
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
@@ -95,12 +142,36 @@ namespace PantallaDeLogin
             dtpFechaNacimiento.Value = DateTime.Parse(fechaString);
             tbPass.Text = "";
             cbSexo.SelectedIndex = 0;
+            tbPass.Enabled = true;
+            TBNombreususario.Enabled = true;
             TbNombre.Focus();
+            btnGuardar.Text = "GUARDAR";
+            CargarUsuarios(dgvUsuarios);
         }
         private void btnRecargar_Click(object sender, EventArgs e)
         {
             CargarUsuarios(dgvUsuarios);
         }
 
+        private void dgvUsuarios_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0)
+            {
+                int rowIndex = e.RowIndex;
+                IDUsuario = dgvUsuarios.Rows[rowIndex].Cells["idUsuario"].Value.ToString();
+                TbNombre.Text = dgvUsuarios.Rows[rowIndex].Cells["Nombre"].Value.ToString();
+                mtbTelefono.Text = dgvUsuarios.Rows[rowIndex].Cells["Telefono"].Value.ToString();
+                TbDomicilio.Text = dgvUsuarios.Rows[rowIndex].Cells["Domicilio"].Value.ToString();
+                string fechaString = dgvUsuarios.Rows[rowIndex].Cells["FechaNacimiento"].Value.ToString();
+                dtpFechaNacimiento.Value = DateTime.Parse(fechaString);
+                string seleccion = dgvUsuarios.Rows[rowIndex].Cells["Sexo"].Value.ToString();
+                cbSexo.SelectedIndex = (seleccion == "M") ? 1 : 0;
+                tbPass.Enabled = false;
+                TBNombreususario.Enabled = false;
+                DataGridViewRow selectedRow = dgvUsuarios.Rows[rowIndex];
+                selectedRow.DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
+                btnGuardar.Text = "MODIFICAR";
+            }
+        }
     }
 }

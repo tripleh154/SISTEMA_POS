@@ -16,7 +16,7 @@ namespace PantallaDeLogin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Productos());
+            Application.Run(new Usuarios());
         }
     }
 }
