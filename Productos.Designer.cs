@@ -40,13 +40,14 @@ namespace PantallaDeLogin
             this.lbPrecio = new System.Windows.Forms.Label();
             this.gbProductos = new System.Windows.Forms.GroupBox();
             this.dgvProductos = new System.Windows.Forms.DataGridView();
+            this.chkbActivo = new System.Windows.Forms.CheckBox();
             this.gbProductos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductos)).BeginInit();
             this.SuspendLayout();
             // 
             // btnGuardar
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(63, 346);
+            this.btnGuardar.Location = new System.Drawing.Point(63, 353);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(120, 37);
             this.btnGuardar.TabIndex = 0;
@@ -72,7 +73,7 @@ namespace PantallaDeLogin
             // 
             // tbDescripcion
             // 
-            this.tbDescripcion.Location = new System.Drawing.Point(30, 137);
+            this.tbDescripcion.Location = new System.Drawing.Point(30, 132);
             this.tbDescripcion.Name = "tbDescripcion";
             this.tbDescripcion.Size = new System.Drawing.Size(225, 20);
             this.tbDescripcion.TabIndex = 4;
@@ -80,7 +81,7 @@ namespace PantallaDeLogin
             // lbDescripcion
             // 
             this.lbDescripcion.AutoSize = true;
-            this.lbDescripcion.Location = new System.Drawing.Point(27, 106);
+            this.lbDescripcion.Location = new System.Drawing.Point(27, 101);
             this.lbDescripcion.Name = "lbDescripcion";
             this.lbDescripcion.Size = new System.Drawing.Size(63, 13);
             this.lbDescripcion.TabIndex = 3;
@@ -88,7 +89,7 @@ namespace PantallaDeLogin
             // 
             // tbStock
             // 
-            this.tbStock.Location = new System.Drawing.Point(30, 288);
+            this.tbStock.Location = new System.Drawing.Point(30, 270);
             this.tbStock.Name = "tbStock";
             this.tbStock.Size = new System.Drawing.Size(225, 20);
             this.tbStock.TabIndex = 8;
@@ -96,7 +97,7 @@ namespace PantallaDeLogin
             // lbStock
             // 
             this.lbStock.AutoSize = true;
-            this.lbStock.Location = new System.Drawing.Point(27, 257);
+            this.lbStock.Location = new System.Drawing.Point(27, 247);
             this.lbStock.Name = "lbStock";
             this.lbStock.Size = new System.Drawing.Size(35, 13);
             this.lbStock.TabIndex = 7;
@@ -104,7 +105,7 @@ namespace PantallaDeLogin
             // 
             // tbPrecio
             // 
-            this.tbPrecio.Location = new System.Drawing.Point(30, 212);
+            this.tbPrecio.Location = new System.Drawing.Point(30, 202);
             this.tbPrecio.Name = "tbPrecio";
             this.tbPrecio.Size = new System.Drawing.Size(225, 20);
             this.tbPrecio.TabIndex = 6;
@@ -112,7 +113,7 @@ namespace PantallaDeLogin
             // lbPrecio
             // 
             this.lbPrecio.AutoSize = true;
-            this.lbPrecio.Location = new System.Drawing.Point(27, 183);
+            this.lbPrecio.Location = new System.Drawing.Point(27, 173);
             this.lbPrecio.Name = "lbPrecio";
             this.lbPrecio.Size = new System.Drawing.Size(37, 13);
             this.lbPrecio.TabIndex = 5;
@@ -120,6 +121,7 @@ namespace PantallaDeLogin
             // 
             // gbProductos
             // 
+            this.gbProductos.Controls.Add(this.chkbActivo);
             this.gbProductos.Controls.Add(this.tbNombre);
             this.gbProductos.Controls.Add(this.tbStock);
             this.gbProductos.Controls.Add(this.btnGuardar);
@@ -144,6 +146,18 @@ namespace PantallaDeLogin
             this.dgvProductos.Size = new System.Drawing.Size(470, 395);
             this.dgvProductos.TabIndex = 10;
             this.dgvProductos.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProductos_CellDoubleClick);
+            // 
+            // chkbActivo
+            // 
+            this.chkbActivo.AutoSize = true;
+            this.chkbActivo.Checked = true;
+            this.chkbActivo.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkbActivo.Location = new System.Drawing.Point(34, 316);
+            this.chkbActivo.Name = "chkbActivo";
+            this.chkbActivo.Size = new System.Drawing.Size(65, 17);
+            this.chkbActivo.TabIndex = 9;
+            this.chkbActivo.Text = "ACTIVO";
+            this.chkbActivo.UseVisualStyleBackColor = true;
             // 
             // Productos
             // 
@@ -174,5 +188,6 @@ namespace PantallaDeLogin
         private System.Windows.Forms.Label lbPrecio;
         private System.Windows.Forms.GroupBox gbProductos;
         private System.Windows.Forms.DataGridView dgvProductos;
+        private System.Windows.Forms.CheckBox chkbActivo;
     }
 }

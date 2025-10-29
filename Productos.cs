@@ -41,11 +41,13 @@ namespace PantallaDeLogin
                 using (SqlConnection conexion = new SqlConnection(cadenaConexion))
                 {
                     conexion.Open();
+                    int Activo = (chkbActivo.Checked) ? 1 : 0 ;
                     string query = "UPDATE catProductos " +
                         "SET Nombre = @nombre," +
                         "Descripcion = @descripcion," +
                         "Precio = @precio," +
-                        "Stock = @stock " +
+                        "Stock = @stock," +
+                        "Estatus = @estatus " +
                         "WHERE ProductoID = @idProducto";
                     using (SqlCommand comando = new SqlCommand(query, conexion))
                     {
@@ -54,6 +56,7 @@ namespace PantallaDeLogin
                         comando.Parameters.AddWithValue("@precio", tbPrecio.Text);
                         comando.Parameters.AddWithValue("@stock", tbStock.Text);
                         comando.Parameters.AddWithValue("@idProducto", IdProducto);
+                        comando.Parameters.AddWithValue("@estatus", Activo);
                         comando.ExecuteNonQuery();
                         MessageBox.Show("Modificado correctamente ");
                         limpiarPantalla();
@@ -70,7 +73,8 @@ namespace PantallaDeLogin
             {
                 conexion.Open();
                 DateTime fechaHoraLocal = DateTime.Now;
-                string query = "INSERT INTO catProductos VALUES (@nombre,@descripcion,@precio,@stock,@fecha)";
+                int Activo = (chkbActivo.Checked) ? 1 : 0;
+                string query = "INSERT INTO catProductos VALUES (@nombre,@descripcion,@precio,@stock,@fecha,@estatus)";
                 using (SqlCommand comando = new SqlCommand(query, conexion))
                 {
                     comando.Parameters.AddWithValue("@nombre", tbNombre.Text);
@@ -78,6 +82,7 @@ namespace PantallaDeLogin
                     comando.Parameters.AddWithValue("@precio", tbPrecio.Text);
                     comando.Parameters.AddWithValue("@stock", tbStock.Text);
                     comando.Parameters.AddWithValue("@fecha", fechaHoraLocal);
+                    comando.Parameters.AddWithValue("@estatus", Activo);
                     comando.ExecuteNonQuery();
                     MessageBox.Show("Guardado correctamente ");
                     limpiarPantalla();
@@ -92,12 +97,13 @@ namespace PantallaDeLogin
             tbStock.Text = "";
             btnGuardar.Text = "GUARDAR";
             tbNombre.Focus();
+            chkbActivo.Checked = true;
             CargarProductos(dgvProductos);
         }
 
         public void CargarProductos(DataGridView dgvProductos)
         {
-            string consulta = "SELECT ProductoID AS ID, Nombre, Descripcion, Precio, Stock, FechaCreacion FROM catProductos order by Nombre ASC";
+            string consulta = "SELECT ProductoID AS ID, Nombre, Descripcion, Precio, Stock, FechaCreacion, Estatus FROM catProductos order by Nombre ASC";
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 try
@@ -120,12 +126,17 @@ namespace PantallaDeLogin
         {
             if (e.RowIndex >= 0)
             {
+                foreach(DataGridViewRow Row in dgvProductos.Rows)
+                {
+                    Row.DefaultCellStyle.BackColor = System.Drawing.Color.White;
+                }
                 int rowIndex = e.RowIndex;
                 IdProducto = dgvProductos.Rows[rowIndex].Cells["ID"].Value.ToString();
                 tbNombre.Text = dgvProductos.Rows[rowIndex].Cells["Nombre"].Value.ToString();
                 tbDescripcion.Text = dgvProductos.Rows[rowIndex].Cells["Descripcion"].Value.ToString();
                 tbPrecio.Text = dgvProductos.Rows[rowIndex].Cells["Precio"].Value.ToString();
                 tbStock.Text = dgvProductos.Rows[rowIndex].Cells["Stock"].Value.ToString();
+                chkbActivo.Checked = (bool)dgvProductos.Rows[rowIndex].Cells["Estatus"].Value;
                 DataGridViewRow selectedRow = dgvProductos.Rows[rowIndex];
                 selectedRow.DefaultCellStyle.BackColor = System.Drawing.Color.Yellow;
                 btnGuardar.Text = "MODIFICAR";
