@@ -35,15 +35,22 @@ namespace PantallaDeLogin
             using (SqlConnection conexion = new SqlConnection(cadenaConexion))
             {
                 conexion.Open();
-                string query = "SELECT COUNT(*) FROM catUsuario WHERE NombreUsuario = @catUsuario AND Pass = @contraseña";
+                string query = "SELECT Nombre FROM catUsuario WHERE NombreUsuario = @catUsuario AND Pass = @contraseña";
                 using (SqlCommand comando = new SqlCommand(query, conexion))
                 {
+                    int count = 0;
+                    string Nombre = "";
                     comando.Parameters.AddWithValue("@catUsuario", TBnombre.Text);
                     comando.Parameters.AddWithValue("@contraseña", TBcontrasena.Text);
-                    int count = (int)comando.ExecuteScalar();
+                    SqlDataReader reader = comando.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        count++;
+                        Nombre = reader.GetString(0);
+                    }
                     if (count > 0)
                     {
-                        Menu objMenu = new Menu();
+                        Menu objMenu = new Menu(Nombre);
                         this.Visible = false;
                         objMenu.ShowDialog();
                     }

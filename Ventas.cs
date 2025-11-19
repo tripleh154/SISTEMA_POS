@@ -12,9 +12,19 @@ namespace PantallaDeLogin
 {
     public partial class Ventas: Form
     {
-        public Ventas()
+        string sNombre;
+        public Ventas(string Nombre)
         {
+            sNombre = Nombre;
             InitializeComponent();
+        }
+
+        private void Ventas_Load(object sender, EventArgs e)
+        {
+            DateTime fechaHoraLocal = DateTime.Now;
+            lblFecha.Text = fechaHoraLocal.ToString("d");
+            lblHora.Text = fechaHoraLocal.ToString("t");
+            lblTrabajador.Text = sNombre;
         }
     }
 }
