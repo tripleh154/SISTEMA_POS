@@ -33,7 +33,7 @@ namespace PantallaDeLogin
 
         private void tbProducto_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if(e.KeyChar==13)
+            if (e.KeyChar == 13)
             {
                 string consulta = "SELECT ProductoID, Nombre, Precio FROM catProductos WHERE ProductoID = @IDProd AND Estatus = 'TRUE'";
                 using (SqlConnection con = new SqlConnection(cadenaConexion))
@@ -46,15 +46,43 @@ namespace PantallaDeLogin
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         DataTable dt = new DataTable();
                         da.Fill(dt);
+
                         if (dt.Rows.Count > 0)
                         {
                             DataRow row = dt.Rows[0];
-                            dgvProductos.Rows.Add(row["ProductoID"], row["Nombre"], row["Precio"],1, row["Precio"]);
+                            string productoID = row["ProductoID"].ToString();
+                            double precioUnitario = Convert.ToDouble(row["Precio"]);
+
+                            // 1. Verificar si el producto ya existe en el DataGridView
+                            bool productoEncontrado = false;
+                            foreach (DataGridViewRow dgvRow in dgvProductos.Rows)
+                            {
+                                // La columna ProductoID está en el índice 0
+                                if (dgvRow.Cells[0].Value != null && dgvRow.Cells[0].Value.ToString() == productoID)
+                                {
+                                    // Producto encontrado, aumentar cantidad y recalcular subtotal de la fila
+                                    int cantidadActual = Convert.ToInt32(dgvRow.Cells[3].Value);
+                                    int nuevaCantidad = cantidadActual + 1;
+
+                                    dgvRow.Cells[3].Value = nuevaCantidad; // Actualizar Cantidad (Columna 3)
+                                    dgvRow.Cells[4].Value = nuevaCantidad * precioUnitario; // Actualizar Importe (Columna 4)
+
+                                    productoEncontrado = true;
+                                    break;
+                                }
+                            }
+
+                            // 2. Si el producto NO existe, agregarlo como una nueva fila
+                            if (!productoEncontrado)
+                            {
+                                dgvProductos.Rows.Add(row["ProductoID"], row["Nombre"], precioUnitario, 1, precioUnitario);
+                            }
+
+                            // 3. Recalcular los totales de toda la venta
+                            RecalcularTotales();
+
                             tbProducto.Text = "";
                             tbProducto.Focus();
-                            tbSubtotal.Text = (Convert.ToDouble(tbSubtotal.Text) + Convert.ToDouble(row["Precio"])).ToString();
-                            tbIVA.Text = (Convert.ToDouble(tbSubtotal.Text) * .16).ToString();
-                            tbTotal.Text = (Convert.ToDouble(tbSubtotal.Text) + Convert.ToDouble(tbIVA.Text)).ToString();
                         }
                     }
                     catch (Exception ex)
@@ -63,7 +91,31 @@ namespace PantallaDeLogin
                     }
                 }
             }
-        
+        }
+
+        private void RecalcularTotales()
+        {
+            double subTotal = 0.0;
+            // La columna del Importe de la fila está en el índice 4
+            const int IMPORTE_COLUMN_INDEX = 4;
+
+            // Sumar el importe de todas las filas del DataGridView
+            foreach (DataGridViewRow row in dgvProductos.Rows)
+            {
+                if (row.Cells[IMPORTE_COLUMN_INDEX].Value != null)
+                {
+                    subTotal += Convert.ToDouble(row.Cells[IMPORTE_COLUMN_INDEX].Value);
+                }
+            }
+
+            // Aplicar IVA y calcular Total
+            double iva = subTotal * 0.16;
+            double total = subTotal + iva;
+
+            // Actualizar los TextBoxes
+            tbSubtotal.Text = subTotal.ToString("N2");
+            tbIVA.Text = iva.ToString("N2");
+            tbTotal.Text = total.ToString("N2");
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
