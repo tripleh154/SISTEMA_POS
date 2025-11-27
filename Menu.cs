@@ -13,9 +13,11 @@ namespace PantallaDeLogin
     public partial class Menu: Form
     {
         string sNombre;
-        public Menu(string Nombre)
+        int iIdUsuario;
+        public Menu(string Nombre,int idUsuario)
         {
             sNombre = Nombre;
+            iIdUsuario = idUsuario;
             InitializeComponent();
         }
 
@@ -32,7 +34,7 @@ namespace PantallaDeLogin
         private void ventasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Crea el objeto para la nueva ventamna de Ventas
-            Ventas objVentas = new Ventas(sNombre);
+            Ventas objVentas = new Ventas(sNombre,iIdUsuario);
             objVentas.ShowDialog();
         }
 

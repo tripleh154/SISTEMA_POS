@@ -234,6 +234,7 @@
             this.btnFinalizar.TabIndex = 19;
             this.btnFinalizar.Text = "FINALIZAR";
             this.btnFinalizar.UseVisualStyleBackColor = false;
+            this.btnFinalizar.Click += new System.EventHandler(this.btnFinalizar_Click);
             // 
             // tbPagoCon
             // 
