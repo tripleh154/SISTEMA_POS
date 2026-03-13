@@ -23,6 +23,7 @@ namespace PantallaDeLogin
             iIdUsuario = idUsuario;
             InitializeComponent();
             tbProducto.Focus();
+            //COMENTARIO PRUEBAS DE GIT
         }
 
         private void Ventas_Load(object sender, EventArgs e)
